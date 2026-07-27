@@ -3,9 +3,10 @@ import { signInWithRedirect } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 const COLORS = {
-  bg: "#FFF9F5", card: "#FFFFFF", ink: "#241A17", inkSoft: "#8C7B76",
-  primary: "#E8546B", primarySoft: "#FDE6EA", line: "#F0E4E0", low: "#D64545",
+  bg: "#0A0A0B", card: "#1B1D21", ink: "#FFFFFF", inkSoft: "#A3A3A3",
+  primary: "#7C5CFF", line: "#2A2A2A", low: "#FF4D8D",
 };
+const GRADIENT_PINK = "linear-gradient(135deg, #7C5CFF 0%, #FF4D8D 100%)";
 
 export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
@@ -26,18 +27,23 @@ export default function AuthScreen() {
   }
 
   return (
-    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", padding: 24, background: COLORS.bg, boxSizing: "border-box" }}>
+    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", padding: 24, background: COLORS.bg, boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: -100, left: -60, width: 260, height: 260, borderRadius: "50%", background: COLORS.primary, opacity: 0.18, filter: "blur(70px)" }} />
       <div style={{ flex: 1 }} />
-      <h1 style={{ fontSize: 26, fontWeight: 800, margin: "0 0 4px", color: COLORS.ink }}>AI Dating Coach</h1>
-      <p style={{ color: COLORS.inkSoft, fontSize: 14, margin: "0 0 32px" }}>
+      <div style={{
+        width: 64, height: 64, borderRadius: 20, background: GRADIENT_PINK, display: "flex",
+        alignItems: "center", justifyContent: "center", fontSize: 28, marginBottom: 20, boxShadow: "0 12px 30px -8px rgba(124,92,255,0.6)",
+      }}>💜</div>
+      <h1 style={{ fontSize: 28, fontWeight: 800, margin: "0 0 6px", color: COLORS.ink, fontFamily: "Manrope, Inter, sans-serif" }}>AI Dating Coach</h1>
+      <p style={{ color: COLORS.inkSoft, fontSize: 14.5, margin: "0 0 36px", lineHeight: 1.5 }}>
         Sign in to keep your profile and progress with you — on any device.
       </p>
 
       {error && <p style={{ color: COLORS.low, fontSize: 13, marginBottom: 14 }}>{error}</p>}
 
       <button onClick={handleGoogle} disabled={loading} style={{
-        width: "100%", padding: "14px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
-        color: COLORS.ink, fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
+        width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
+        color: "#1a1a1a", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
         display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
       }}>
         <GoogleIcon />
@@ -48,7 +54,7 @@ export default function AuthScreen() {
         Apple Sign-In is ready to turn on once you have an Apple Developer account.
       </p>
 
-      <p style={{ fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 24 }}>
+      <p style={{ fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 28 }}>
         This is a practice tool only — not a matching or dating service.
       </p>
       <div style={{ flex: 2 }} />
