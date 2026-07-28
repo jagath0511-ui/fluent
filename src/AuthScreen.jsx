@@ -3,10 +3,10 @@ import { signInWithRedirect } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 const COLORS = {
-  bg: "#0A0A0B", card: "#1B1D21", ink: "#FFFFFF", inkSoft: "#A3A3A3",
-  primary: "#7C5CFF", line: "#2A2A2A", low: "#FF4D8D",
+  bg: "#FFF8F3", card: "#FFFFFF", ink: "#2B211D", inkSoft: "#8C7B76",
+  primary: "#FF6B4A", line: "#F1E4DD", low: "#E8536B",
 };
-const GRADIENT_PINK = "linear-gradient(135deg, #7C5CFF 0%, #FF4D8D 100%)";
+const GRADIENT_PINK = "linear-gradient(135deg, #FF8A5C 0%, #E8536B 100%)";
 
 export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
@@ -28,12 +28,12 @@ export default function AuthScreen() {
 
   return (
     <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", padding: 24, background: COLORS.bg, boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: -100, left: -60, width: 260, height: 260, borderRadius: "50%", background: COLORS.primary, opacity: 0.18, filter: "blur(70px)" }} />
+      <div style={{ position: "absolute", top: -100, left: -60, width: 260, height: 260, borderRadius: "50%", background: COLORS.primary, opacity: 0.1, filter: "blur(80px)" }} />
       <div style={{ flex: 1 }} />
       <div style={{
         width: 64, height: 64, borderRadius: 20, background: GRADIENT_PINK, display: "flex",
-        alignItems: "center", justifyContent: "center", fontSize: 28, marginBottom: 20, boxShadow: "0 12px 30px -8px rgba(124,92,255,0.6)",
-      }}>💜</div>
+        alignItems: "center", justifyContent: "center", fontSize: 28, marginBottom: 20, boxShadow: "0 12px 26px -8px rgba(232,83,107,0.45)",
+      }}>💛</div>
       <h1 style={{ fontSize: 28, fontWeight: 800, margin: "0 0 6px", color: COLORS.ink, fontFamily: "Manrope, Inter, sans-serif" }}>AI Dating Coach</h1>
       <p style={{ color: COLORS.inkSoft, fontSize: 14.5, margin: "0 0 36px", lineHeight: 1.5 }}>
         Sign in to keep your profile and progress with you — on any device.
@@ -44,6 +44,7 @@ export default function AuthScreen() {
       <button onClick={handleGoogle} disabled={loading} style={{
         width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
         color: "#1a1a1a", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
+        boxShadow: "0 2px 12px rgba(43,33,29,0.06)",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
       }}>
         <GoogleIcon />
