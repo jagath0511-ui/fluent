@@ -3,8 +3,8 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 const COLORS = {
-  bg: "#FFF8F3", card: "#FFFFFF", ink: "#2B211D", inkSoft: "#8C7B76",
-  primary: "#FF6B4A", line: "#F1E4DD", low: "#E8536B",
+  bg: "#F7F8FC", card: "#FFFFFF", ink: "#1E1B2E", inkSoft: "#8C8AA0",
+  primary: "#4C5FD9", line: "#E5E7F0", low: "#E8536B", gold: "#D9A441",
 };
 
 export default function AuthScreen() {
@@ -15,10 +15,7 @@ export default function AuthScreen() {
     setError("");
     setLoading(true);
     try {
-      // Popup avoids the redirect round-trip, which mobile Chrome can
-      // silently break by clearing storage while you're away on Google's site.
       await signInWithPopup(auth, googleProvider);
-      // onAuthStateChanged in App.jsx picks up the signed-in user automatically.
     } catch (err) {
       console.error("Sign-in error:", err);
       setError(`Couldn't start sign-in: ${err.code || err.message || "please try again."}`);
@@ -28,14 +25,14 @@ export default function AuthScreen() {
 
   return (
     <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", padding: 24, background: COLORS.bg, boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: -100, left: -60, width: 260, height: 260, borderRadius: "50%", background: COLORS.primary, opacity: 0.1, filter: "blur(80px)" }} />
+      <div style={{ position: "absolute", top: -100, left: -60, width: 260, height: 260, borderRadius: "50%", background: COLORS.primary, opacity: 0.08, filter: "blur(80px)" }} />
       <div style={{ flex: 1 }} />
       <div style={{ marginBottom: 20 }}>
         <Logo size={64} />
       </div>
-      <h1 style={{ fontSize: 28, fontWeight: 800, margin: "0 0 6px", color: COLORS.ink, fontFamily: "Manrope, Inter, sans-serif" }}>AI Dating Coach</h1>
+      <h1 style={{ fontSize: 28, fontWeight: 800, margin: "0 0 6px", color: COLORS.ink, fontFamily: "Manrope, Inter, sans-serif" }}>fluent</h1>
       <p style={{ color: COLORS.inkSoft, fontSize: 14.5, margin: "0 0 36px", lineHeight: 1.5 }}>
-        Sign in to keep your profile and progress with you — on any device.
+        Practice the conversation before it matters.
       </p>
 
       {error && <p style={{ color: COLORS.low, fontSize: 13, marginBottom: 14 }}>{error}</p>}
@@ -43,7 +40,7 @@ export default function AuthScreen() {
       <button onClick={handleGoogle} disabled={loading} style={{
         width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
         color: "#1a1a1a", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
-        boxShadow: "0 2px 12px rgba(43,33,29,0.06)",
+        boxShadow: "0 2px 12px rgba(30,27,46,0.06)",
         display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
       }}>
         <GoogleIcon />
@@ -55,7 +52,7 @@ export default function AuthScreen() {
       </p>
 
       <p style={{ fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 28 }}>
-        This is a practice tool only — not a matching or dating service.
+        This is a practice tool only — for building real-world communication confidence.
       </p>
       <div style={{ flex: 2 }} />
     </div>
@@ -64,17 +61,20 @@ export default function AuthScreen() {
 
 export function Logo({ size = 64 }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
+    <svg width={size} height={size} viewBox="0 0 200 200">
       <defs>
-        <linearGradient id="logoGrad" x1="10%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FF8A5C" />
-          <stop offset="100%" stopColor="#E8536B" />
+        <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#5A6BE0" />
+          <stop offset="100%" stopColor="#4C5FD9" />
         </linearGradient>
       </defs>
-      <circle cx="36" cy="36" r="24" fill="none" stroke="#FF6B4A" strokeOpacity="0.35" strokeWidth="3.2" />
-      <path d="M 19 54 L 12 65 L 28 57 Z" fill="none" stroke="#FF6B4A" strokeOpacity="0.35" strokeWidth="3.2" strokeLinejoin="round" />
-      <circle cx="62" cy="62" r="28" fill="url(#logoGrad)" />
-      <path d="M 44 84 L 35 96 L 53 87 Z" fill="url(#logoGrad)" />
+      <rect width="200" height="200" rx="44" fill="url(#logoBg)" />
+      <path
+        d="M55 145 C 55 145, 75 145, 90 120 C 105 95, 95 85, 110 80 C 125 75, 135 90, 145 65"
+        fill="none" stroke="#FFFFFF" strokeWidth="9" strokeLinecap="round"
+      />
+      <circle cx="55" cy="145" r="14" fill="#FFFFFF" />
+      <circle cx="145" cy="65" r="14" fill="#D9A441" />
     </svg>
   );
 }
