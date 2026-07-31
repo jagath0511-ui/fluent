@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 const COLORS = {
@@ -15,10 +15,10 @@ export default function AuthScreen() {
     setError("");
     setLoading(true);
     try {
-      // Redirect flow is more reliable than popup on mobile browsers,
-      // which often block or silently fail popup-based auth.
-      // App.jsx already calls getRedirectResult() on load to catch the return.
-      await signInWithRedirect(auth, googleProvider);
+      // Popup avoids the redirect round-trip, which mobile Chrome can
+      // silently break by clearing storage while you're away on Google's site.
+      await signInWithPopup(auth, googleProvider);
+      // onAuthStateChanged in App.jsx picks up the signed-in user automatically.
     } catch (err) {
       console.error("Sign-in error:", err);
       setError(`Couldn't start sign-in: ${err.code || err.message || "please try again."}`);
