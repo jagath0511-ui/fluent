@@ -9,17 +9,17 @@ import {
 
 // ---------- Design tokens ----------
 const COLORS = {
-  bg: "#FFF8F3", surface: "#FFFFFF", card: "#FFFFFF",
-  ink: "#2B211D", inkSoft: "#8C7B76", line: "#F1E4DD",
-  primary: "#FF6B4A", primarySoft: "rgba(255,107,74,0.12)",
-  accent: "#E8536B", accentSoft: "rgba(232,83,107,0.12)",
+  bg: "#F7F8FC", surface: "#FFFFFF", card: "#FFFFFF",
+  ink: "#1E1B2E", inkSoft: "#8C8AA0", line: "#E5E7F0",
+  primary: "#4C5FD9", primarySoft: "rgba(76,95,217,0.12)",
+  accent: "#5A6BE0", accentSoft: "rgba(90,107,224,0.12)",
   good: "#4CAF82", goodSoft: "rgba(76,175,130,0.14)",
   mid: "#F0A83C", midSoft: "rgba(240,168,60,0.14)",
   low: "#E8536B", lowSoft: "rgba(232,83,107,0.14)",
   gold: "#D9A441",
 };
-const GRADIENT = "linear-gradient(135deg, #FF8A5C 0%, #FF6B4A 100%)";
-const GRADIENT_PINK = "linear-gradient(135deg, #FF8A5C 0%, #E8536B 100%)";
+const GRADIENT = "linear-gradient(135deg, #5A6BE0 0%, #4C5FD9 100%)";
+const GRADIENT_PINK = "linear-gradient(135deg, #5A6BE0 0%, #4C5FD9 100%)";
 const glass = (opacity = 0.05) => ({
   background: "#FFFFFF",
   border: `1px solid ${COLORS.line}`,
