@@ -5,7 +5,7 @@ people can actually use — for $0, using GitHub + Vercel's free tier.
 
 ## What's in this folder
 - `src/App.jsx` — your whole app (same code from Claude, just wired up properly)
-- `api/chat.js` — a tiny backend that holds your Anthropic API key safely on the
+- `api/chat.js` — a tiny backend that holds your Gemini API key safely on the
   server, so it's never visible to anyone using the site
 - everything else — standard project plumbing (Vite), you don't need to touch it
 
@@ -18,12 +18,9 @@ Go to github.com and sign up if you don't have one.
 Go to vercel.com → "Sign Up" → choose "Continue with GitHub". This links the two
 so Vercel can deploy straight from your code.
 
-### 3. Get your Anthropic API key
-Go to console.anthropic.com → API Keys → Create Key. Copy it somewhere safe —
+### 3. Get your Gemini API key
+Go to Google AI Studio (aistudio.google.com) → Get API key. Copy it somewhere safe —
 you'll paste it into Vercel in step 6, not into any file.
-
-Note: this uses pay-as-you-go API pricing, separate from any Claude.ai subscription.
-Check console.anthropic.com for current rates before sharing the link widely.
 
 ### 4. Put this project on GitHub
 - On github.com, click "New repository," name it `ai-dating-coach`, keep it Private
@@ -46,7 +43,7 @@ Check console.anthropic.com for current rates before sharing the link widely.
 
 ### 6. Add your API key to Vercel (important — do this before or right after deploying)
 - In your Vercel project, go to Settings → Environment Variables
-- Add one: Name = `ANTHROPIC_API_KEY`, Value = the key you copied in step 3
+- Add one: Name = `GEMINI_API_KEY`, Value = the key you copied in step 3
 - Redeploy (Vercel → Deployments → click the three dots on the latest → Redeploy)
 
 ### 7. Set up Firebase (this is what locks each person's profile to their account)
