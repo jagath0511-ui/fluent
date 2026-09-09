@@ -95,9 +95,10 @@ async function callClaude(system, messages, task = "chat") {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ system, messages, task }),
+    body: JSON.stringify({ systemPrompt: system, system, messages, task }),
   });
   const data = await res.json();
+  if (data.reply !== undefined) return data.reply;
   return (data.content || []).map((b) => (b.type === "text" ? b.text : "")).join("\n").trim();
 }
 
