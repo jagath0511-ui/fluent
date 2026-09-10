@@ -1208,6 +1208,7 @@ import AuthScreen from "./AuthScreen";
 
 export default function App() {
   const [authUser, setAuthUser] = useState(undefined);
+  const [isGuest, setIsGuest] = useState(false);
   const [ready, setReady] = useState(false);
   const [prefs, setPrefs] = useState(null);
   const [plan, setPlan] = useState("free");
@@ -1223,32 +1224,57 @@ export default function App() {
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
-    getRedirectResult(auth).catch((err) => console.error("Sign-in redirect error:", err));
-    const unsub = onAuthStateChanged(auth, (u) => setAuthUser(u));
-    return () => unsub();
+    if (typeof window !== "undefined" && localStorage.getItem("is_guest") === "true") {
+      setIsGuest(true);
+    }
+    try {
+      if (auth) {
+        getRedirectResult(auth).catch((err) => console.error("Sign-in redirect error:", err));
+        const unsub = onAuthStateChanged(auth, (u) => setAuthUser(u));
+        return () => unsub();
+      }
+    } catch {
+      setAuthUser(null);
+    }
   }, []);
 
   useEffect(() => {
-    if (authUser === undefined) return;
-    if (authUser === null) { setReady(true); return; }
+    if (authUser === undefined && !isGuest) return;
+    if (authUser === null && !isGuest) { setReady(true); return; }
     (async () => {
-      try {
-        const snap = await getDoc(doc(db, "users", authUser.uid));
-        setPrefs(snap.exists() ? snap.data() : null);
-      } catch (err) { console.error("Couldn't load profile:", err); setPrefs(null); }
+      if (authUser) {
+        try {
+          const snap = await getDoc(doc(db, "users", authUser.uid));
+          setPrefs(snap.exists() ? snap.data() : null);
+        } catch (err) { console.error("Couldn't load profile:", err); setPrefs(null); }
+      } else if (isGuest) {
+        try {
+          const raw = localStorage.getItem("guest_prefs");
+          setPrefs(raw ? JSON.parse(raw) : null);
+        } catch { setPrefs(null); }
+      }
       try { const pl = await window.storage.get("plan"); setPlan(pl ? JSON.parse(pl.value) : "free"); } catch { setPlan("free"); }
       try { const s = await window.storage.get("sessions"); setSessions(s ? JSON.parse(s.value) : []); } catch { setSessions([]); }
       try { const st = await window.storage.get("streak"); setStreak(st ? JSON.parse(st.value) : 0); } catch { setStreak(0); }
       try { const d = await window.storage.get(`daily-count-${todayKey()}`); setDailyCount(d ? JSON.parse(d.value) : 0); } catch { setDailyCount(0); }
       setReady(true);
     })();
-  }, [authUser]);
+  }, [authUser, isGuest]);
 
   async function saveSessions(next) { setSessions(next); try { await window.storage.set("sessions", JSON.stringify(next)); } catch {} }
   async function finishOnboarding(data) {
     const p = { ...data, onboarding_completed: true };
     setPrefs(p);
-    try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save profile:", err); }
+    if (authUser) {
+      try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save profile:", err); }
+    } else {
+      localStorage.setItem("guest_prefs", JSON.stringify(p));
+    }
+  }
+
+  function handleGuestLogin() {
+    localStorage.setItem("is_guest", "true");
+    setIsGuest(true);
   }
 
   function requireScenario() { setFlow("scenario"); }
@@ -1270,7 +1296,11 @@ export default function App() {
     if (plan !== "pro" && !prefs?.freeChatCompleted) {
       const p = { ...prefs, freeChatCompleted: true };
       setPrefs(p);
-      try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save profile:", err); }
+      if (authUser) {
+        try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save profile:", err); }
+      } else {
+        localStorage.setItem("guest_prefs", JSON.stringify(p));
+      }
     }
     setLastSession(session);
     setFlow("feedback");
@@ -1279,13 +1309,21 @@ export default function App() {
   async function updateAiGenderPref(g) {
     const p = { ...prefs, aiGenderPref: g };
     setPrefs(p);
-    try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save:", err); }
+    if (authUser) {
+      try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save:", err); }
+    } else {
+      localStorage.setItem("guest_prefs", JSON.stringify(p));
+    }
   }
 
   async function saveProfileEdits(fields) {
     const p = { ...prefs, ...fields };
     setPrefs(p);
-    try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save profile:", err); }
+    if (authUser) {
+      try { await setDoc(doc(db, "users", authUser.uid), p); } catch (err) { console.error("Couldn't save profile:", err); }
+    } else {
+      localStorage.setItem("guest_prefs", JSON.stringify(p));
+    }
     setFlow(null);
   }
 
@@ -1305,7 +1343,9 @@ export default function App() {
   async function resetAll() {
     setPrefs(null); setSessions([]); setStreak(0); setPlan("free"); setTab("home"); setFlow(null);
     try {
-      await deleteDoc(doc(db, "users", authUser.uid));
+      if (authUser) await deleteDoc(doc(db, "users", authUser.uid));
+      localStorage.removeItem("guest_prefs");
+      localStorage.removeItem("is_guest");
       await window.storage.set("sessions", JSON.stringify([]));
       await window.storage.set("plan", JSON.stringify("free"));
       await window.storage.set("streak", JSON.stringify(0));
@@ -1313,10 +1353,16 @@ export default function App() {
   }
 
   async function handleSignOut() {
-    try { await signOut(auth); } catch (err) { console.error("Sign-out error:", err); }
+    try {
+      if (auth) await signOut(auth);
+    } catch (err) { console.error("Sign-out error:", err); }
+    localStorage.removeItem("is_guest");
+    localStorage.removeItem("guest_prefs");
+    setIsGuest(false);
+    setAuthUser(null);
   }
 
-  if (authUser === null) return <Shell><AuthScreen /></Shell>;
+  if (authUser === null && !isGuest) return <Shell><AuthScreen onGuestLogin={handleGuestLogin} /></Shell>;
   if (!ready) return <Shell><div style={{ padding: 40, textAlign: "center", color: COLORS.inkSoft }}>Loading…</div></Shell>;
 
   if (showPaywall) {

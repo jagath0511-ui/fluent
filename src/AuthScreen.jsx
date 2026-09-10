@@ -7,7 +7,7 @@ const COLORS = {
   primary: "#4C5FD9", line: "#E5E7F0", low: "#E8536B", gold: "#D9A441",
 };
 
-export default function AuthScreen() {
+export default function AuthScreen({ onGuestLogin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -15,10 +15,11 @@ export default function AuthScreen() {
     setError("");
     setLoading(true);
     try {
+      if (!auth) throw new Error("Firebase Auth is not configured");
       await signInWithPopup(auth, googleProvider);
     } catch (err) {
       console.error("Sign-in error:", err);
-      setError(`Couldn't start sign-in: ${err.code || err.message || "please try again."}`);
+      setError(`Google sign-in issue: ${err.code || err.message || "please try again."}`);
       setLoading(false);
     }
   }
@@ -37,15 +38,25 @@ export default function AuthScreen() {
 
       {error && <p style={{ color: COLORS.low, fontSize: 13, marginBottom: 14 }}>{error}</p>}
 
-      <button onClick={handleGoogle} disabled={loading} style={{
-        width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
-        color: "#1a1a1a", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
-        boxShadow: "0 2px 12px rgba(30,27,46,0.06)",
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-      }}>
-        <GoogleIcon />
-        {loading ? "Signing in…" : "Continue with Google"}
-      </button>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <button onClick={handleGoogle} disabled={loading} style={{
+          width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
+          color: "#1a1a1a", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
+          boxShadow: "0 2px 12px rgba(30,27,46,0.06)",
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+        }}>
+          <GoogleIcon />
+          {loading ? "Signing in…" : "Continue with Google"}
+        </button>
+
+        <button onClick={onGuestLogin} style={{
+          width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: COLORS.primarySoft,
+          color: COLORS.primary, fontSize: 15, fontWeight: 700, cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+        }}>
+          Continue as Guest
+        </button>
+      </div>
 
       <p style={{ fontSize: 11.5, color: COLORS.inkSoft, textAlign: "center", marginTop: 16 }}>
         Apple Sign-In is ready to turn on once you have an Apple Developer account.
