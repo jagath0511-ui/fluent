@@ -9,21 +9,22 @@ import {
 
 // ---------- Design tokens ----------
 const COLORS = {
-  bg: "#F7F8FC", surface: "#FFFFFF", card: "#FFFFFF",
-  ink: "#1E1B2E", inkSoft: "#8C8AA0", line: "#E5E7F0",
-  primary: "#4C5FD9", primarySoft: "rgba(76,95,217,0.12)",
-  accent: "#5A6BE0", accentSoft: "rgba(90,107,224,0.12)",
-  good: "#4CAF82", goodSoft: "rgba(76,175,130,0.14)",
-  mid: "#F0A83C", midSoft: "rgba(240,168,60,0.14)",
-  low: "#E8536B", lowSoft: "rgba(232,83,107,0.14)",
-  gold: "#D9A441",
+  bg: "#0B0D17", surface: "#131625", card: "#191C2E",
+  ink: "#F9FAFB", inkSoft: "#9CA3AF", line: "#272A3E",
+  primary: "#6366F1", primarySoft: "rgba(99,102,241,0.16)",
+  accent: "#EC4899", accentSoft: "rgba(236,72,153,0.16)",
+  good: "#10B981", goodSoft: "rgba(16,185,129,0.16)",
+  mid: "#F59E0B", midSoft: "rgba(245,158,11,0.16)",
+  low: "#EF4444", lowSoft: "rgba(239,68,68,0.16)",
+  gold: "#F59E0B",
 };
-const GRADIENT = "linear-gradient(135deg, #5A6BE0 0%, #4C5FD9 100%)";
-const GRADIENT_PINK = "linear-gradient(135deg, #5A6BE0 0%, #4C5FD9 100%)";
-const glass = (opacity = 0.05) => ({
-  background: "#FFFFFF",
+const GRADIENT = "linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #EC4899 100%)";
+const GRADIENT_PINK = "linear-gradient(135deg, #6366F1 0%, #EC4899 100%)";
+const glass = (opacity = 0.08) => ({
+  background: "rgba(25, 28, 46, 0.75)",
+  backdropFilter: "blur(16px)",
   border: `1px solid ${COLORS.line}`,
-  boxShadow: `0 2px 16px rgba(43,33,29,${0.04 + opacity * 0.3})`,
+  boxShadow: `0 8px 32px rgba(0,0,0,${0.25 + opacity})`,
 });
 
 function GlobalStyle() {

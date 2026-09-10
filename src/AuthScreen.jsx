@@ -3,8 +3,9 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 
 const COLORS = {
-  bg: "#F7F8FC", card: "#FFFFFF", ink: "#1E1B2E", inkSoft: "#8C8AA0",
-  primary: "#4C5FD9", line: "#E5E7F0", low: "#E8536B", gold: "#D9A441",
+  bg: "#0F111A", card: "#181B28", ink: "#F3F4F6", inkSoft: "#9CA3AF",
+  primary: "#6366F1", primarySoft: "rgba(99,102,241,0.18)",
+  accent: "#818CF8", line: "#2A2E3D", low: "#F87171", gold: "#F59E0B",
 };
 
 export default function AuthScreen({ onGuestLogin }) {
@@ -25,47 +26,49 @@ export default function AuthScreen({ onGuestLogin }) {
   }
 
   return (
-    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", padding: 24, background: COLORS.bg, boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", top: -100, left: -60, width: 260, height: 260, borderRadius: "50%", background: COLORS.primary, opacity: 0.08, filter: "blur(80px)" }} />
+    <div style={{ minHeight: "100%", display: "flex", flexDirection: "column", padding: 28, background: "linear-gradient(180deg, #0F111A 0%, #161926 100%)", boxSizing: "border-box", position: "relative", overflow: "hidden", color: COLORS.ink }}>
+      <div style={{ position: "absolute", top: -80, right: -60, width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.25) 0%, rgba(99,102,241,0) 70%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: -60, left: -60, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(236,72,153,0.18) 0%, rgba(236,72,153,0) 70%)", pointerEvents: "none" }} />
+
       <div style={{ flex: 1 }} />
-      <div style={{ marginBottom: 20 }}>
-        <Logo size={64} />
+
+      <div style={{ backdropFilter: "blur(20px)", background: "rgba(24, 27, 40, 0.75)", border: `1px solid ${COLORS.line}`, borderRadius: 32, padding: "32px 24px", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}>
+        <div style={{ marginBottom: 20, display: "flex", justifyContent: "center" }}>
+          <Logo size={72} />
+        </div>
+        <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px", color: COLORS.ink, textAlign: "center", letterSpacing: "-0.5px" }}>Fluent AI</h1>
+        <p style={{ color: COLORS.inkSoft, fontSize: 15, margin: "0 0 28px", lineHeight: 1.5, textAlign: "center" }}>
+          Master modern dating conversation with your personalized AI coach.
+        </p>
+
+        {error && <p style={{ color: COLORS.low, fontSize: 13, marginBottom: 16, textAlign: "center", background: "rgba(248,113,113,0.1)", padding: "10px 14px", borderRadius: 14 }}>{error}</p>}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <button onClick={handleGoogle} disabled={loading} style={{
+            width: "100%", padding: "16px", borderRadius: 20, border: `1px solid ${COLORS.line}`, background: "#FFFFFF",
+            color: "#111827", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
+            boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "transform 0.15s ease"
+          }}>
+            <GoogleIcon />
+            {loading ? "Signing in…" : "Continue with Google"}
+          </button>
+
+          <button onClick={onGuestLogin} style={{
+            width: "100%", padding: "16px", borderRadius: 20, border: "none", background: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
+            color: "#FFFFFF", fontSize: 15, fontWeight: 700, cursor: "pointer",
+            boxShadow: "0 8px 20px -4px rgba(99,102,241,0.5)",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 10, transition: "transform 0.15s ease"
+          }}>
+            ⚡ Continue as Guest
+          </button>
+        </div>
       </div>
-      <h1 style={{ fontSize: 28, fontWeight: 800, margin: "0 0 6px", color: COLORS.ink, fontFamily: "Manrope, Inter, sans-serif" }}>fluent</h1>
-      <p style={{ color: COLORS.inkSoft, fontSize: 14.5, margin: "0 0 36px", lineHeight: 1.5 }}>
-        Practice the conversation before it matters.
+
+      <p style={{ fontSize: 12, color: COLORS.inkSoft, textAlign: "center", marginTop: 24 }}>
+        Private & secure · Free practice environment
       </p>
-
-      {error && <p style={{ color: COLORS.low, fontSize: 13, marginBottom: 14 }}>{error}</p>}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <button onClick={handleGoogle} disabled={loading} style={{
-          width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: "#fff",
-          color: "#1a1a1a", fontSize: 15, fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1,
-          boxShadow: "0 2px 12px rgba(30,27,46,0.06)",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-        }}>
-          <GoogleIcon />
-          {loading ? "Signing in…" : "Continue with Google"}
-        </button>
-
-        <button onClick={onGuestLogin} style={{
-          width: "100%", padding: "15px", borderRadius: 999, border: `1px solid ${COLORS.line}`, background: COLORS.primarySoft,
-          color: COLORS.primary, fontSize: 15, fontWeight: 700, cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-        }}>
-          Continue as Guest
-        </button>
-      </div>
-
-      <p style={{ fontSize: 11.5, color: COLORS.inkSoft, textAlign: "center", marginTop: 16 }}>
-        Apple Sign-In is ready to turn on once you have an Apple Developer account.
-      </p>
-
-      <p style={{ fontSize: 11, color: COLORS.inkSoft, textAlign: "center", marginTop: 28 }}>
-        This is a practice tool only — for building real-world communication confidence.
-      </p>
-      <div style={{ flex: 2 }} />
+      <div style={{ flex: 1.2 }} />
     </div>
   );
 }
