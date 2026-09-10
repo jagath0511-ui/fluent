@@ -1225,25 +1225,49 @@ export default function App() {
   const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("is_guest") === "true") {
+    const isGuestUser = typeof window !== "undefined" && localStorage.getItem("is_guest") === "true";
+    if (isGuestUser) {
       setIsGuest(true);
-    }
-    try {
-      if (auth) {
-        getRedirectResult(auth).catch((err) => console.error("Sign-in redirect error:", err));
-        const unsub = onAuthStateChanged(auth, (u) => setAuthUser(u));
-        return () => unsub();
-      }
-    } catch {
       setAuthUser(null);
     }
+
+    if (!auth) {
+      setAuthUser(null);
+      setReady(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (authUser === undefined && !isGuestUser) {
+        setAuthUser(null);
+        setReady(true);
+      }
+    }, 600);
+
+    let unsub = () => {};
+    try {
+      getRedirectResult(auth).catch((err) => console.error("Sign-in redirect error:", err));
+      unsub = onAuthStateChanged(auth, (u) => {
+        clearTimeout(timer);
+        setAuthUser(u);
+      });
+    } catch {
+      clearTimeout(timer);
+      setAuthUser(null);
+      setReady(true);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      unsub();
+    };
   }, []);
 
   useEffect(() => {
     if (authUser === undefined && !isGuest) return;
     if (authUser === null && !isGuest) { setReady(true); return; }
     (async () => {
-      if (authUser) {
+      if (authUser && db) {
         try {
           const snap = await getDoc(doc(db, "users", authUser.uid));
           setPrefs(snap.exists() ? snap.data() : null);
